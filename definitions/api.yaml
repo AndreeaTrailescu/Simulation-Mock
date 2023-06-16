@@ -1,0 +1,529 @@
+openapi: "3.0.2"
+info:
+  title: Simulation Mock API
+  version: "0.0.0"
+  description: Description of the API for the simulation mock prototype.
+paths:
+  /suites:
+    post:
+      operationId: "createTestSuite"
+      description: create a new test suite for a project
+      requestBody:
+        content:
+          "application/json":
+            schema:
+              $ref: "#/components/schemas/SimpleTestSuite"
+      responses:
+        "201":
+          description: Success
+          content:
+            "application/json":
+              schema:
+                $ref: "#/components/schemas/SimpleTestSuite"
+        "400":
+          description: Bad request
+        "5XX":
+          description: Unexpected error
+    get:
+      operationId: "listAllTestSuites"
+      description: list all test suites
+      responses:
+        "200":
+          description: Success
+          content:
+            "application/json":
+              schema:
+                $ref: "#/components/schemas/TestSuiteList"
+        "5XX":
+          description: Unexpected error
+
+  /suites/{suiteId}:
+    get:
+      operationId: "getTestSuite"
+      description: get a single suite
+      parameters:
+        - name: suiteId
+          description: suite id
+          required: true
+          in: path
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Success
+          content:
+            "application/json":
+              schema:
+                $ref: "#/components/schemas/TestSuite"
+        "404":
+          description: Not found
+        "5XX":
+          description: Unexpected error
+    delete:
+      operationId: "deleteTestSuite"
+      description: delete a test suite
+      parameters:
+        - name: suiteId
+          description: suite id
+          required: true
+          in: path
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "204":
+          description: Success
+        "404":
+          description: Not found
+        "5XX":
+          description: Unexpected error
+    put:
+      operationId: "updateTestSuite"
+      description: update a test suite
+      parameters:
+        - name: suiteId
+          description: suite id
+          required: true
+          in: path
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          "application/json":
+            schema:
+              $ref: "#/components/schemas/TestSuite"
+      responses:
+        "204":
+          description: Success
+        "404":
+          description: Not found
+        "5XX":
+          description: Unexpected error
+
+  /runs:
+    post:
+      operationId: "createRun"
+      description: Start a new run
+      requestBody:
+        content:
+          "application/json":
+            schema:
+              $ref: "#/components/schemas/Run"
+      responses:
+        "201":
+          description: Success
+          content:
+            "application/json":
+              schema:
+                $ref: "#/components/schemas/Run"
+        "400":
+          description: Bad request
+        "5XX":
+          description: Unexpected error
+    get:
+      operationId: "listAllRuns"
+      description: list all runs
+      responses:
+        "200":
+          description: Success
+          content:
+            "application/json":
+              schema:
+                $ref: "#/components/schemas/RunList"
+        "5XX":
+          description: Unexpected error
+
+  /runs/{runId}:
+    get:
+      operationId: "getRun"
+      description: get a single run
+      parameters:
+        - name: runId
+          description: run id
+          required: true
+          in: path
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Success
+          content:
+            "application/json":
+              schema:
+                $ref: "#/components/schemas/Run"
+        "404":
+          description: Not found
+        "5XX":
+          description: Unexpected error
+  /runs/{runId}/testcases:
+    get:
+      operationId: "listAllTestCaseResults"
+      description: list all test case result ids
+      parameters:
+        - name: runId
+          description: run id
+          required: true
+          in: path
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Success
+          content:
+            "application/json":
+              schema:
+                $ref: "#/components/schemas/TestCaseResultList"
+        "5XX":
+          description: Unexpected error
+  /runs/{runId}/results:
+    get:
+      operationId: "listAllResults"
+      description: list all results of a run
+      parameters:
+        - name: runId
+          description: run id
+          required: true
+          in: path
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Success
+          content:
+            "application/json":
+              schema:
+                $ref: "#/components/schemas/ResultList"
+        "5XX":
+          description: Unexpected error
+  /testcases:
+    post:
+      operationId: createTestCase
+      description: Create test cases of a scenario
+      requestBody:
+        content:
+          "application/json":
+            schema:
+              $ref: "#/components/schemas/TestCase"
+      responses:
+        "201":
+          description: Success
+          content:
+            "application/json":
+              schema:
+                $ref: "#/components/schemas/TestCase"
+        "400":
+          description: Bad request
+        "5XX":
+          description: Unexpected error
+    get:
+      operationId: "listAllTestCases"
+      description: list all test cases
+      responses:
+        "200":
+          description: Success
+          content:
+            "application/json":
+              schema:
+                $ref: "#/components/schemas/TestCaseList"
+        "5XX":
+          description: Unexpected error
+  /testcases/{testCaseId}:
+    get:
+      operationId: "getTestCase"
+      description: get a single test case
+      parameters:
+        - name: testCaseId
+          description: test case id
+          required: true
+          in: path
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Success
+          content:
+            "application/json":
+              schema:
+                $ref: "#/components/schemas/TestCase"
+        "404":
+          description: Not found
+        "5XX":
+          description: Unexpected error
+  /execute:
+    post:
+      operationId: createFormalTest
+      description: execute rule evaluation
+      requestBody:
+        content:
+          "application/json":
+            schema:
+              $ref: "#/components/schemas/FormalTestRequest"
+      responses:
+        "201":
+          description: Formal test was created and executed successfully
+          content:
+            "application/json":
+              schema:
+                $ref: "#/components/schemas/FormalTestResultList"
+        "400":
+          description: Bad request
+        "5XX":
+          description: Unexpected error
+components:
+  schemas:
+    TestSuiteList:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/TestSuite"
+      required:
+        - items
+    TestSuite:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        description:
+          type: string
+        testCaseIds:
+          type: array
+          items:
+            type: string
+        runIds:
+          type: array
+          items:
+            type: string
+        createdOn:
+          type: string
+        testEnvironmentId:
+          type: string
+        systemUnderTestId:
+          type: string
+      required:
+        - id
+        - name
+    SimpleTestSuite:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        description:
+          type: string
+        testCaseIds:
+          type: array
+          items:
+            type: string
+        runIds:
+          type: array
+          items:
+            type: string
+        createdOn:
+          type: string
+        testEnvironmentId:
+          type: string
+        systemUnderTestId:
+          type: string
+      required:
+        - name
+    RunList:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/Run"
+      required:
+        - items
+    Run:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        description:
+          type: string
+        suiteId:
+          type: string
+          format: uuid
+        systemUnderTestId:
+          type: string
+        testEnvironmentId:
+          type: string
+        testCaseIds:
+          type: array
+          items:
+            type: string
+        createdOn:
+          type: string
+      required:
+        - suiteId
+    TestCaseList:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/TestCase"
+      required:
+        - items
+    TestCase:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        description:
+          type: string
+        scenarioId:
+          type: string
+        suiteId:
+          type: string
+        createdOn:
+          type: string
+      required:
+        - suiteId
+    TestCaseResultList:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/TestCaseResult"
+      required:
+        - items
+    TestCaseResult:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+    ResultList:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/Result"
+      required:
+        - items
+    Result:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        description:
+          type: string
+        scenarioId:
+          type: string
+        suiteId:
+          type: string
+        finished:
+          type: string
+        started:
+          type: string
+        runId:
+          type: string
+        testCaseId:
+          type: string
+        systemUnderTestId:
+          type: string
+        testEnvironmentId:
+          type: string
+        resultDataFile:
+          type:
+            $ref: "#/components/schemas/File"
+        state:
+          type:
+            $ref: "#/components/schemas/State"
+      required:
+        - testCaseId
+    File:
+      type: object
+      properties:
+        uri:
+          type: string
+    State:
+      type: string
+      enum:
+        - PASSED
+        - FAILED
+    FormalTestRequest:
+      type: object
+      properties:
+        mdfObjectPath:
+          type: string
+        ruleSetId:
+          type: string
+          format: uuid
+    FormalTestResultList:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/FormalTestResult"
+      required:
+        - items
+    FormalTestResult:
+      type: object
+      properties:
+        executionStatus:
+          type: string
+        formalRequirementName:
+          type: string
+        depthOfViolation:
+          type: number
+        depthOfFulfillment:
+          type: number
+        fulfillment:
+          $ref: "#/components/schemas/Fulfillment"
+        coverage:
+          $ref: "#/components/schemas/Coverage"
+      required:
+        - executionStatus
+        - formalRequirementName
+        - fulfillment
+        - coverage
+    Fulfillment:
+      type: string
+      enum:
+        - FULFILLED
+        - INCONCLUSIVE
+        - VIOLATED
+    Coverage:
+      type: string
+      enum:
+        - COVERED
+        - PARTIALLY_COVERED
+        - NOT_COVERED
+        - NO_GOALS
+  securitySchemes:
+    Bearer:
+      type: apiKey
+      scheme: bearer
+      name: Authorization
+      in: header
+
+security:
+  - Bearer: []
